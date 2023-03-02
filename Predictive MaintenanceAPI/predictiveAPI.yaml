@@ -1,0 +1,147 @@
+openapi: 3.0.0
+info:
+  title: SmartShip predictive maintenance API
+  version: "1.0.0"
+  description: API predictic maintnamce.
+
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+
+servers:
+  - url: localhost:1301
+    description: Development server on local mashine
+
+paths:
+  /report/{shipId}:
+    description: "Ship predictive maintenance report"
+    get:
+      operationId: "get ship raport"
+      summary: Add new ship data
+      tags:
+        - Ship Information
+      description: Add new ship data for specific ship
+      parameters:
+        - name: shipId
+          in: path
+          required: true
+          description: Ship id
+          schema:
+            type: string
+      responses:
+        "200":
+          $ref: "#/components/responses/AddNewShipDataResponse"
+        "400":
+          $ref: "#/components/responses/400Error"
+components:
+  securitySchemes:
+    BaisicAuth:
+      type: http
+      scheme: basic
+  schemas:
+    Metadata:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+          example: "admin@smartship.eu"
+        modifiedAt:
+          type: string
+          format: date-time
+        modifiedBy:
+          type: string
+          example: "user@smartship.eu"
+    ShipInformation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: "Very Smart Ship"
+        ownerId:
+          type: string
+          format: uuid
+    BridgeData:
+      type: object
+      properties:
+        windSpeed:
+          type: integer
+          format: int32
+          minimum: 0
+          example: 10
+        GPSSpeed:
+          type: integer
+          format: int32
+          minimum: 0
+          example: 10
+        position:
+          $ref: "#/components/schemas/Position"
+    EngineData:
+      type: object
+      properties:
+        airCoolerCoolingWaterInletPressure:
+          type: number
+          example: 113909
+        cylinerInformation:
+          type: array
+          items:
+            $ref: "#/components/schemas/CylinderData"
+        airCoolerCoolingWaterInletTemperature:
+          type: number
+          example: 21.16
+        coolingFreshWaterInletPressure:
+          type: number
+          example: 1015366
+        controlAirPressure:
+          type: number
+          example: 2103031
+        exhaustValveSpringAirInletPressure:
+          type: number
+          example: 321221
+        RPMOrder:
+          type: number
+          example: 2137
+        RPMReal:
+          type: number
+          example: 2209
+
+  requestBodies:
+    shipDataRequest:
+      required: true
+      description: "Ship data from IoT"
+      content:
+        application/json:
+          schema:
+            properties:
+              metadata:
+                $ref: "#/components/schemas/Metadata"
+              data:
+                $ref: "#/components/schemas/ShipData"
+  responses:
+    ShipReportResponse:
+      description: "Ship predictive maintenance report"
+      content:
+        application/json:
+          schema:
+            properties:
+              id:
+                type: string
+              metadata:
+                $ref: "#/components/schemas/Metadata"
+              data:
+                $ref: "#/components/schemas/ShipData"
+    400Error:
+      description: Invalid request
+      content:
+        "application/json":
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Invalid request"
