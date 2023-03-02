@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: SmartShip data colection API
-  version: '1.0.0'
+  version: "1.0.0"
   description: API for data collection.
 
   license:
@@ -14,24 +14,45 @@ servers:
 
 paths:
   /data/{shipId}:
+    description: "Ship information"
     post:
-      operationId: 'Acc new ship data'
+      operationId: "Add new ship data"
       summary: Add new ship data
+      tags:
+        - Ship Information
       description: Add new ship data for specific ship
-      parameters: 
+      parameters:
         - name: shipId
           in: path
           required: true
           description: Ship id
-          schema: 
+          schema:
             type: string
-      requestBody: 
-        $ref: '#/components/requestBodies/shipDataRequest'
+      requestBody:
+        $ref: "#/components/requestBodies/shipDataRequest"
       responses:
-        '200':
-          $ref: '#/components/responses/shipDataResponse'
-        '400':
-          $ref: '#/components/responses/400Error'
+        "200":
+          $ref: "#/components/responses/AddNewShipDataResponse"
+        "400":
+          $ref: "#/components/responses/400Error"
+    get:
+      operationId: "Get ship data"
+      summary: Get ship data
+      description: Get raw data
+      tags:
+        - Ship Information
+      parameters:
+        - name: shipId
+          in: path
+          required: true
+          description: Ship id
+          schema:
+            type: string
+      responses:
+        "200":
+          $ref: "#/components/responses/ShipDataResponse"
+        "400":
+          $ref: "#/components/responses/400Error"
 components:
   securitySchemes:
     BaisicAuth:
@@ -53,11 +74,52 @@ components:
         modifiedBy:
           type: string
           example: "user@smartship.eu"
+    Position:
+      type: object
+      properties:
+        latitude:
+          type: number
+          example: 37.757285
+        longitude:
+          type: number
+          example: 23.626491
+    CylinderData:
+      type: object
+      properties:
+        scavengeAirFireDetectionTemperature:
+          type: number
+          example: 27.8
+        exhaustGasOutTemperature:
+          type: number
+          example: 453.12
+        jacketCoolingFreshWaterOutletTemperature:
+          type: number
+          example: 13.56
+        pistonCoolingOutletTemperature:
+          type: number
+          example: 89.17
+    ShipInformation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: "Very Smart Ship"
+        ownerId:
+          type: string
+          format: uuid
     ShipData:
       type: object
+      properties:
+        bridgeData:
+          $ref: "#/components/schemas/BridgeData"
+        engineData:
+          $ref: "#/components/schemas/EngineData"
     BridgeData:
       type: object
-      properties: 
+      properties:
         windSpeed:
           type: integer
           format: int32
@@ -68,44 +130,86 @@ components:
           format: int32
           minimum: 0
           example: 10
-        
-      
-
+        position:
+          $ref: "#/components/schemas/Position"
+    EngineData:
+      type: object
+      properties:
+        airCoolerCoolingWaterInletPressure:
+          type: number
+          example: 113909
+        cylinerInformation:
+          type: array
+          items:
+            $ref: "#/components/schemas/CylinderData"
+        airCoolerCoolingWaterInletTemperature:
+          type: number
+          example: 21.16
+        coolingFreshWaterInletPressure:
+          type: number
+          example: 1015366
+        controlAirPressure:
+          type: number
+          example: 2103031
+        exhaustValveSpringAirInletPressure:
+          type: number
+          example: 321221
+        RPMOrder:
+          type: number
+          example: 2137
+        RPMReal:
+          type: number
+          example: 2209
 
   requestBodies:
     shipDataRequest:
       required: true
-      description: 'Ship data from IoT'
-      content:           
-          application/json:
-            schema:
-              properties:
-                metadata:
-                  $ref: '#/components/schemas/Metadata'
-                data:
-                  $ref: '#/components/schemas/ShipData'
+      description: "Ship data from IoT"
+      content:
+        application/json:
+          schema:
+            properties:
+              metadata:
+                $ref: "#/components/schemas/Metadata"
+              data:
+                $ref: "#/components/schemas/ShipData"
   responses:
-    shipDataResponse:
-      description: 'Added new data'
-      content:           
-          application/json:
-            schema:
-              properties:
-                id:
-                  type: string
-                metadata:
-                  $ref: '#/components/schemas/Metadata'
-                data:
-                  $ref: '#/components/schemas/ShipData'
+    AddNewShipDataResponse:
+      description: "Added new data"
+      content:
+        application/json:
+          schema:
+            properties:
+              id:
+                type: string
+              metadata:
+                $ref: "#/components/schemas/Metadata"
+              data:
+                $ref: "#/components/schemas/ShipData"
+    ShipDataResponse:
+      description: "Added new data"
+      content:
+        application/json:
+          schema:
+            properties:
+              items:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    metadata:
+                      $ref: "#/components/schemas/Metadata"
+                    data:
+                      $ref: "#/components/schemas/ShipData"
     400Error:
       description: Invalid request
       content:
-        'application/json':
+        "application/json":
           schema:
             type: object
             properties:
               message:
                 type: string
-                example: 'Invalid request'    
-        
-    
+                example: "Invalid request"
