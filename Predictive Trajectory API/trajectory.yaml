@@ -1,26 +1,25 @@
 openapi: 3.0.0
 info:
-  title: SmartShip predictive maintenance API
+  title: SmartShip trajectory predictive API
   version: "1.0.0"
-  description: API predictic maintnamce.
+  description: Predictive Trajectory API
 
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
 
 servers:
-  - url: localhost:1301
+  - url: localhost:1302
     description: Development server on local mashine
 
 paths:
-  /report/{shipId}:
+  /trajectory/{shipId}:
     description: "Ship predictive maintenance report"
     get:
-      operationId: "get ship raport"
-      summary: Add new ship data
+      operationId: "get ship trajectory"
+      summary: get ship predicted trajectory
       tags:
-        - Ship report
-      description: Add new ship data for specific ship
+        - Trajectory
       parameters:
         - name: shipId
           in: path
@@ -30,7 +29,7 @@ paths:
             type: string
       responses:
         "200":
-          $ref: "#/components/responses/ShipReportResponse"
+          $ref: "#/components/responses/ShipTrajectoryResponse"
         "400":
           $ref: "#/components/responses/400Error"
 components:
@@ -54,49 +53,25 @@ components:
         modifiedBy:
           type: string
           example: "user@smartship.eu"
-    ShipInformation:
+    PredictedPosition:
       type: object
       properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-          example: "Very Smart Ship"
-        ownerId:
-          type: string
-          format: uuid
-    PartPrediction:
-      type: object
-      properties:
-        partId:
-          type: string
-          format: uuid
-        daysToChange:
+        latitude:
           type: number
-          minimum: 0
-          example: 213
-        daysToService:
+          example: 37.757285
+        longitude:
           type: number
-          minimum: 0
-          example: 213
-        mainfunctionChance:
+          example: 23.626491
+        predictedTime:
+          type: string
+          format: date-time
+        accuracity:
           type: number
           maximum: 100
-          example: 21
-    EngineReport:
-      type: object
-      properties:
-        waterPump:
-          $ref: "#/components/schemas/PartPrediction"
-        airPump:
-          $ref: "#/components/schemas/PartPrediction"
-        cylinerInformation:
-          type: array
-          items:
-            $ref: "#/components/schemas/PartPrediction"
+          minimum: 0
+          example: 76
   responses:
-    ShipReportResponse:
+    ShipTrajectoryResponse:
       description: "Ship predictive maintenance report"
       content:
         application/json:
@@ -106,8 +81,11 @@ components:
                 type: string
               metadata:
                 $ref: "#/components/schemas/Metadata"
-              engineReport:
-                $ref: "#/components/schemas/EngineReport"
+              prediction:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PredictedPosition"
+
     400Error:
       description: Invalid request
       content:
