@@ -14,12 +14,12 @@ servers:
 
 paths:
   /data/{shipId}:
-    description: "Ship information"
+    description: "Ship data"
     post:
       operationId: "Add new ship data"
       summary: Add new ship data
       tags:
-        - Ship Information
+        - Ship Data
       description: Add new ship data for specific ship
       parameters:
         - name: shipId
@@ -40,7 +40,7 @@ paths:
       summary: Get ship data
       description: Get raw data
       tags:
-        - Ship Information
+        - Ship Data
       parameters:
         - name: shipId
           in: path
@@ -51,6 +51,40 @@ paths:
       responses:
         "200":
           $ref: "#/components/responses/ShipDataResponse"
+        "400":
+          $ref: "#/components/responses/400Error"
+  /ship:
+    description: "Ship data"
+    post:
+      operationId: "Add new ship information"
+      summary: Add new ship
+      tags:
+        - Ship Information
+      description: Add new ship data for specific ship
+      requestBody:
+        $ref: "#/components/requestBodies/shipInformationRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/AddNewShipResponse"
+        "400":
+          $ref: "#/components/responses/400Error"
+  /ship/{shipId}:
+    get:
+      operationId: "Get ship information"
+      summary: Get ship information
+      description: Get ship information
+      tags:
+        - Ship Information
+      parameters:
+        - name: shipId
+          in: path
+          required: true
+          description: Ship id
+          schema:
+            type: string
+      responses:
+        "200":
+          $ref: "#/components/responses/AddNewShipResponse"
         "400":
           $ref: "#/components/responses/400Error"
 components:
@@ -104,6 +138,15 @@ components:
         id:
           type: string
           format: uuid
+        name:
+          type: string
+          example: "Very Smart Ship"
+        ownerId:
+          type: string
+          format: uuid
+    NewShipInformation:
+      type: object
+      properties:
         name:
           type: string
           example: "Very Smart Ship"
@@ -210,6 +253,15 @@ components:
                 $ref: "#/components/schemas/Metadata"
               data:
                 $ref: "#/components/schemas/ShipData"
+    shipInformationRequest:
+      required: true
+      description: "Ship data from IoT"
+      content:
+        application/json:
+          schema:
+            properties:
+              information:
+                $ref: "#/components/schemas/NewShipInformation"
   responses:
     AddNewShipDataResponse:
       description: "Added new data"
@@ -240,6 +292,21 @@ components:
                       $ref: "#/components/schemas/Metadata"
                     data:
                       $ref: "#/components/schemas/ShipData"
+    AddNewShipResponse:
+      description: "Added new ship"
+      content:
+        application/json:
+          schema:
+            properties:
+              items:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    shipInfo:
+                      $ref: "#/components/schemas/ShipInformation"
+                    metadata:
+                      $ref: "#/components/schemas/Metadata"
     400Error:
       description: Invalid request
       content:
