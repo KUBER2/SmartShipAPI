@@ -117,6 +117,8 @@ components:
           $ref: "#/components/schemas/BridgeData"
         engineData:
           $ref: "#/components/schemas/EngineData"
+        GeneratorEngineData:
+          $ref: "#/components/schemas/GeneratorEngineData"
     BridgeData:
       type: object
       properties:
@@ -160,6 +162,41 @@ components:
         RPMReal:
           type: number
           example: 2209
+    GeneratorEngineData:
+      type: object
+      properties:
+        windingTemperature:
+          type: integer
+          format: int32
+          example: 45
+        chargeAirPresure:
+          type: number
+          example: 1.5
+        chargeAirTemperature:
+          type: number
+          example: 81
+        engineRPMPickUp:
+          type: integer
+          format: int32
+          example: 1891
+        lubeOilPurifiedInlet:
+          type: number
+          example: 8
+        power:
+          type: number
+          example: 98.89
+          minimum: 0
+        startingAirInletPresure:
+          type: number
+          example: 1.1
+          minimum: -1
+        voltage:
+          type: number
+          example: 45
+        fuelOilInletPressure:
+          type: number
+          example: 1.33
+          minimum: -1
 
   requestBodies:
     shipDataRequest:
