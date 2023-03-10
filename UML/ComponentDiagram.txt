@@ -1,0 +1,26 @@
+@startuml
+skinparam componentStyle uml1
+
+[IoT Vessel system] as V #Blue
+[Data Storing] as dataComp #Green
+[Predictive Maintnace] as predComp #Brown 
+[Weather Routing] as weatComp #Yellow
+[User Visualization] as visComp #Pink
+
+interface "POST data" as postData
+postData - dataComp
+interface "GET data" as getData
+dataComp - getData
+interface "GET report" as getReport
+getReport - predComp
+interface "GET route" as getRoute
+getRoute - weatComp
+
+
+V --> postData : evry X seconds
+getData -- predComp
+getData -- weatComp
+getReport -- visComp
+getRoute  -- visComp
+
+@enduml

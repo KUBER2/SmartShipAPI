@@ -17,10 +17,10 @@ paths:
     description: "Ship predictive maintenance report"
     get:
       operationId: "get ship raport"
-      summary: Add new ship data
+      summary: Return the predictive maintnace report
       tags:
         - Ship report
-      description: Add new ship data for specific ship
+      description: Return the predictive maintnace report
       parameters:
         - name: shipId
           in: path
@@ -80,7 +80,7 @@ components:
           type: number
           minimum: 0
           example: 213
-        mainfunctionChance:
+        failureChance:
           type: number
           maximum: 100
           example: 21
