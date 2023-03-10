@@ -1,8 +1,8 @@
 openapi: 3.0.0
 info:
-  title: SmartShip trajectory predictive API
+  title: SmartShip weather trajectory optimazation API
   version: "1.0.0"
-  description: Predictive Trajectory API
+  description: Weather trajectory optimazation API
 
   license:
     name: Apache 2.0
@@ -21,17 +21,41 @@ paths:
       tags:
         - Trajectory
       parameters:
-        - name: shipId
-          in: path
+        - in: path
+          name: shipId
           required: true
           description: Ship id
           schema:
             type: string
+        - in: query
+          name: destLatt
+          description: Geografical latitude of destination
+          schema:
+            type: number
+        - in: query
+          name: destLong
+          description: Geografical longitude of destination
+          schema:
+            type: number
+        - in: query
+          name: startTime
+          description: Starting time in milis sinc epoc
+          schema:
+            type: number
+        - in: query
+          name: destTime
+          description: Destination time in milis sinc epoc
+          schema:
+            type: number
       responses:
         "200":
           $ref: "#/components/responses/ShipTrajectoryResponse"
         "400":
           $ref: "#/components/responses/400Error"
+        "401":
+          $ref: "#/components/responses/401Unauthorized"
+        "406":
+          $ref: "#/components/responses/406NotAcceptabl"
 components:
   securitySchemes:
     BaisicAuth:
@@ -85,7 +109,6 @@ components:
                 type: array
                 items:
                   $ref: "#/components/schemas/PredictedPosition"
-
     400Error:
       description: Invalid request
       content:
@@ -96,3 +119,23 @@ components:
               message:
                 type: string
                 example: "Invalid request"
+    401Unauthorized:
+      description: Unauthorized request
+      content:
+        "application/json":
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Unauthorized"
+    406NotAcceptable:
+      description: Bad parameters
+      content:
+        "application/json":
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Cna't find route with given parameters"
