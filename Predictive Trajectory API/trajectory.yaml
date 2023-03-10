@@ -39,12 +39,12 @@ paths:
             type: number
         - in: query
           name: startTime
-          description: Starting time in milis sinc epoc
+          description: Starting time in milis since epoc
           schema:
             type: number
         - in: query
           name: destTime
-          description: Destination time in milis sinc epoc
+          description: Destination time in milis since epoc
           schema:
             type: number
       responses:
@@ -55,7 +55,7 @@ paths:
         "401":
           $ref: "#/components/responses/401Unauthorized"
         "406":
-          $ref: "#/components/responses/406NotAcceptabl"
+          $ref: "#/components/responses/406NotAcceptable"
 components:
   securitySchemes:
     BaisicAuth:
@@ -138,4 +138,4 @@ components:
             properties:
               message:
                 type: string
-                example: "Cna't find route with given parameters"
+                example: "Can't find route with given parameters"
